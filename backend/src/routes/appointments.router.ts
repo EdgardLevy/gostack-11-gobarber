@@ -5,30 +5,22 @@ import AppointmentsRepository from '../repositories/AppointmentsRepository';
 import CreateAppointmentService from '../services/CreateAppointmentService';
 
 const appointmentsRouter = Router();
-// const appointmentsRepository = new AppointmentsRepository();
-
-// const appointments: Array<Appointment> = [];
-// const appointments: Appointment[] = [];
 
 appointmentsRouter.get('/', async (request, response) => {
   const appointmentsRepository = getCustomRepository(AppointmentsRepository);
-  // const appointments = appointmentsRepository.all();
   const appointments = await appointmentsRepository.find();
   return response.json(appointments);
 });
 
 appointmentsRouter.post('/', async (request, response) => {
   try {
-    const { provider, date } = request.body;
+    const { provider_id, date } = request.body;
 
     const parsedDate = parseISO(date);
 
-    // const createAppointment = new CreateAppointmentService(
-    //   appointmentsRepository,
-    // );
     const createAppointment = new CreateAppointmentService();
     const appointment = await createAppointment.execute({
-      provider,
+      provider_id,
       date: parsedDate,
     });
 
