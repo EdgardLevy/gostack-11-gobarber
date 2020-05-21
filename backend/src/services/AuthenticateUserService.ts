@@ -18,6 +18,7 @@ export default class AuthenticateUserService {
     const usersRepository = getRepository(User);
 
     const user = await usersRepository.findOne({
+      select: ['id', 'avatar', 'name', 'email', 'password'],
       where: { email },
     });
 
