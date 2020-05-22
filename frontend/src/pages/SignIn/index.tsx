@@ -4,12 +4,14 @@ import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import { FormHandles } from '@unform/core';
+import { type } from 'os';
 import logoImg from '../../assets/logo.svg';
 import { Container, Content, Background } from './styles';
 import getValidationErros from '../../utils/getValidationErrors';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import { useAuth } from '../../hooks/AuthContext';
+import { useAuth } from '../../hooks/auth';
+import { useToast } from '../../hooks/toast';
 
 interface SignInFormData {
   email: string;
@@ -19,7 +21,8 @@ interface SignInFormData {
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  const { user, signIn } = useAuth();
+  const { signIn } = useAuth();
+  const { addToast } = useToast();
 
   const handleFormSubmit = useCallback(
     async (data: SignInFormData) => {
@@ -44,9 +47,14 @@ const SignIn: React.FC = () => {
           const errors = getValidationErros(error);
           formRef.current?.setErrors(errors);
         }
+        addToast({
+          type: 'error',
+          title: 'Erro na autenticação',
+          description: 'Verifique seu email/senha',
+        });
       }
     },
-    [signIn],
+    [signIn, addToast],
   );
 
   return (
