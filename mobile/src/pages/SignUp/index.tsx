@@ -12,11 +12,13 @@ import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
-import Yup from 'yup';
+import * as Yup from 'yup';
 import getValidationErros from '../../utils/getValidationErrors';
 import logoImg from '../../assets/logo.png';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+
+import api from '../../services/api';
 
 import { Container, Title, BacktoSignIn, BacktoSignInText } from './styles';
 
@@ -31,38 +33,40 @@ const SignUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
-  const handleFormSubmit = useCallback(async (data: FormData) => {
-    try {
-      formRef.current?.setErrors({});
-      const schema = Yup.object().shape({
-        name: Yup.string().required('Nome obrigatório'),
-        email: Yup.string()
-          .required('E-mail obrigatório')
-          .email('Digite um e-mail válido'),
-        password: Yup.string().min(6, 'No mínimo 6 dígitos'),
-      });
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+  const handleFormSubmit = useCallback(
+    async (data: FormData) => {
+      try {
+        formRef.current?.setErrors({});
+        const schema = Yup.object().shape({
+          name: Yup.string().required('Nome obrigatório'),
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('Digite um e-mail válido'),
+          password: Yup.string().min(6, 'No mínimo 6 dígitos'),
+        });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      // await api.post('users', data);
+        await api.post('users', data);
 
-      // addToast({
-      //   type: 'success',
-      //   title: 'Cadastro realizado!',
-      //   description: 'Você já pode fazer seu logon no GoBarber',
-      // });
+        Alert.alert(
+          'Cadastro realizado com sucesso!',
+          'Você já pode fazer login na aplicação',
+        );
 
-      // history.push('/');
-    } catch (error) {
-      if (error instanceof Yup.ValidationError) {
-        const errors = getValidationErros(error);
-        formRef.current?.setErrors(errors);
-        return;
+        navigation.goBack();
+      } catch (error) {
+        if (error instanceof Yup.ValidationError) {
+          const errors = getValidationErros(error);
+          formRef.current?.setErrors(errors);
+          return;
+        }
+        Alert.alert('Erro no cadastro', 'Verifique os dados do seu cadastro');
       }
-      Alert.alert('Erro no cadastro', 'Verifique os dados do seu cadastro');
-    }
-  }, []);
+    },
+    [navigation],
+  );
   return (
     <>
       <KeyboardAvoidingView

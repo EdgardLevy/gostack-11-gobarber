@@ -13,11 +13,12 @@ import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
-import Yup from 'yup';
+import * as Yup from 'yup';
 import getValidationErros from '../../utils/getValidationErrors';
 import logoImg from '../../assets/logo.png';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import { useAuth } from '../../hooks/auth';
 
 import {
   Container,
@@ -35,37 +36,39 @@ interface FormData {
 
 const SignIn: React.FC = () => {
   const navigation = useNavigation();
+  const { signIn } = useAuth();
   const formRef = useRef<FormHandles>(null);
   const passwordRef = useRef<TextInput>(null);
 
-  const handleFormSubmit = useCallback(async (data: FormData) => {
-    try {
-      formRef.current?.setErrors({});
-      const schema = Yup.object().shape({
-        email: Yup.string()
-          .required('E-mail obrigatório')
-          .email('Digite um e-mail válido'),
-        password: Yup.string().required('Senha obrigatória'),
-      });
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+  const handleFormSubmit = useCallback(
+    async (data: FormData) => {
+      try {
+        formRef.current?.setErrors({});
+        const schema = Yup.object().shape({
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('Digite um e-mail válido'),
+          password: Yup.string().required('Senha obrigatória'),
+        });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      // await signIn({
-      //   email: data.email,
-      //   password: data.password,
-      // });
+        await signIn({
+          email: data.email,
+          password: data.password,
+        });
+      } catch (error) {
+        if (error instanceof Yup.ValidationError) {
+          const errors = getValidationErros(error);
+          formRef.current?.setErrors(errors);
+        }
 
-      // history.push('/dashboard');
-    } catch (error) {
-      if (error instanceof Yup.ValidationError) {
-        const errors = getValidationErros(error);
-        formRef.current?.setErrors(errors);
+        Alert.alert('Erro na autenticação', 'Verifique seu email/senha');
       }
-
-      Alert.alert('Erro na autenticação', 'Verifique seu email/senha');
-    }
-  }, []);
+    },
+    [signIn],
+  );
 
   return (
     <>
