@@ -14,7 +14,7 @@ describe('CreateAppointment', () => {
       provider_id: '1',
     });
 
-    expect(appointment).toHaveProperty('id');
+    await expect(appointment).toHaveProperty('id');
   });
   it('should not be able to create two appointment on the same time', async () => {
     const fakeAppointmentRepository = new FakeAppointmentsRepository();
@@ -29,7 +29,7 @@ describe('CreateAppointment', () => {
       provider_id: '1',
     });
 
-    expect(
+    await expect(
       createAppointment.execute({
         date: dateAppointment,
         provider_id: '2',

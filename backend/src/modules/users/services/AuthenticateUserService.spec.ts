@@ -28,8 +28,8 @@ describe('AuthenticateUser', () => {
       password: '123123',
     });
 
-    expect(response).toHaveProperty('token');
-    expect(response.user).toEqual(user);
+    await expect(response).toHaveProperty('token');
+    await expect(response.user).toEqual(user);
   });
 
   it('should not be able authenticate with non existing user', async () => {
@@ -41,7 +41,7 @@ describe('AuthenticateUser', () => {
       fakeHashProvider,
     );
 
-    expect(
+    await expect(
       authUser.execute({
         email: 'other@provider.com.br',
         password: '123123',
@@ -67,7 +67,7 @@ describe('AuthenticateUser', () => {
       password: '123123',
     });
 
-    expect(
+    await expect(
       authUser.execute({
         email: 'email@provider.com.br',
         password: '321321aaaaa',
