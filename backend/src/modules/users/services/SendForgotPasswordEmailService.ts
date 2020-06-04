@@ -5,8 +5,7 @@ import IUsersRepository from '../repositories/IUsersRepository';
 import IUserTokensRepository from '../repositories/IUserTokensRepository';
 
 interface IRequest {
-  to: string;
-  body: string;
+  email: string;
 }
 @injectable()
 export default class SendForgotPasswordEmailService {
@@ -19,12 +18,15 @@ export default class SendForgotPasswordEmailService {
     private userTokensRepository: IUserTokensRepository,
   ) {}
 
-  public async execute({ to, body }: IRequest): Promise<void> {
-    const user = await this.usersRepository.findByEmail(to);
+  public async execute({ email }: IRequest): Promise<void> {
+    const user = await this.usersRepository.findByEmail(email);
     if (!user) throw new AppError('User does not exists');
 
-    const token = await this.userTokensRepository.generate(user.id);
+    const { token } = await this.userTokensRepository.generate(user.id);
 
-    this.mailProvider.sendEmail(to, body);
+    await this.mailProvider.sendEmail(
+      email,
+      `Pedido de recuperação de senha: ${token}`,
+    );
   }
 }
