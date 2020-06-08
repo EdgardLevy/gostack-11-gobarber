@@ -11,14 +11,13 @@ class FakeAppointmentsRepository implements IAppointmentsRespository {
 
   public async create({
     provider_id,
+    user_id,
     date,
   }: ICreateAppointmentDTO): Promise<Appointment> {
     const appointment = new Appointment();
 
-    Object.assign(appointment, { id: uuid(), provider_id, date });
-    // appointment.id = uuid();
-    // appointment.provider_id = provider_id;
-    // appointment.date = date;
+    Object.assign(appointment, { id: uuid(), provider_id, user_id, date });
+
     this.appointments.push(appointment);
     return appointment;
   }
@@ -51,9 +50,9 @@ class FakeAppointmentsRepository implements IAppointmentsRespository {
     return this.appointments.filter(
       appointment =>
         appointment.provider_id === provider_id &&
+        getDate(appointment.date) === day &&
         getMonth(appointment.date) + 1 === month &&
-        getYear(appointment.date) === year &&
-        getDate(appointment.date) === day,
+        getYear(appointment.date) === year,
     );
   }
 }

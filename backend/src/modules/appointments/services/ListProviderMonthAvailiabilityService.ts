@@ -33,7 +33,6 @@ export default class ListProviderMonthAvailabilityService {
         year,
       },
     );
-    console.log(appointments);
 
     const numbeOfDaysInMonth = getDaysInMonth(new Date(year, month - 1));
 
