@@ -72,7 +72,7 @@ describe('CreateAppointment', () => {
 
     await expect(
       createAppointment.execute({
-        date: new Date(2020, 4, 10, 11),
+        date: new Date(2020, 4, 10, 13),
         provider_id: '2',
         user_id: '2',
       }),
