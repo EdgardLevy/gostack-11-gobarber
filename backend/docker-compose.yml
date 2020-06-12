@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  gobarber_postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - gobarber_postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=gobarber_postgres
+      - POSTGRES_PASSWORD=docker
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb:/data
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/data
+
+volumes:
+  gobarber_postgres:
+  mongodb:
+  redis:
