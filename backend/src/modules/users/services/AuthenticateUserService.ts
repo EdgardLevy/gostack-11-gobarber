@@ -38,7 +38,6 @@ export default class AuthenticateUserService {
     if (!passwordMatched) {
       throw new AppError('Incorrect email/password combination', 401);
     }
-    delete user.password;
 
     const { secret, expiresIn } = authConfig.jwt;
     const token = sign({}, secret, {
