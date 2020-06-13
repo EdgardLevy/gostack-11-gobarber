@@ -9,6 +9,9 @@ export interface IUploadConfig {
   multer: { storage: StorageEngine };
   config: {
     disk: {};
+    aws: {
+      bucket: string;
+    };
   };
 }
 
@@ -30,5 +33,8 @@ export default {
   },
   config: {
     disk: {},
+    aws: {
+      bucket: 'app-gobarber',
+    },
   },
 } as IUploadConfig;
