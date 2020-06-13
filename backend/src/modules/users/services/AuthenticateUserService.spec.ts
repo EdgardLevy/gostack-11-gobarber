@@ -1,26 +1,27 @@
 import AppError from '@shared/errors/AppError';
+
 import FakeUsersRepository from '../infra/typeorm/repositories/fakes/FakeUsersRepository';
 import AuthenticateUserService from './AuthenticateUserService';
-import CreateUserService from './CreateUserService';
+
 import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider';
 
 let fakeUsersRepository: FakeUsersRepository;
 let fakeHashProvider: FakeHashProvider;
-let createUser: CreateUserService;
+
 let authUser: AuthenticateUserService;
 
 describe('AuthenticateUser', () => {
   beforeEach(() => {
     fakeUsersRepository = new FakeUsersRepository();
     fakeHashProvider = new FakeHashProvider();
-    createUser = new CreateUserService(fakeUsersRepository, fakeHashProvider);
+
     authUser = new AuthenticateUserService(
       fakeUsersRepository,
       fakeHashProvider,
     );
   });
   it('should be able authenticate', async () => {
-    const user = await createUser.execute({
+    const user = await fakeUsersRepository.create({
       name: 'User 1',
       email: 'email@provider.com.br',
       password: '123123',
@@ -45,7 +46,7 @@ describe('AuthenticateUser', () => {
   });
 
   it('should not be able authenticate with wrong password', async () => {
-    await createUser.execute({
+    await fakeUsersRepository.create({
       name: 'User 1',
       email: 'email@provider.com.br',
       password: '123123',
