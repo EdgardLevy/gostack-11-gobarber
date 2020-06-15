@@ -1,49 +1,54 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
-import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
+import { FiLogIn, FiMail } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import { FormHandles } from '@unform/core';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import logoImg from '../../assets/logo.svg';
 import { Container, Content, Background, AnimatedContainer } from './styles';
 import getValidationErros from '../../utils/getValidationErrors';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import { useAuth } from '../../hooks/auth';
-import { useToast } from '../../hooks/toast';
 
-interface SignInFormData {
+import { useToast } from '../../hooks/toast';
+import api from '../../services/api';
+
+interface ForgotPasswordFormData {
   email: string;
-  password: string;
 }
 
-const SignIn: React.FC = () => {
+const ForgotPassword: React.FC = () => {
+  const [loading, setLoading] = useState(false);
   const formRef = useRef<FormHandles>(null);
-  const history = useHistory();
-  const { signIn } = useAuth();
+
   const { addToast } = useToast();
 
   const handleFormSubmit = useCallback(
-    async (data: SignInFormData) => {
+    async (data: ForgotPasswordFormData) => {
       try {
+        setLoading(true);
         formRef.current?.setErrors({});
         const schema = Yup.object().shape({
           email: Yup.string()
             .required('E-mail obrigatório')
             .email('Digite um e-mail válido'),
-          password: Yup.string().required('Senha obrigatória'),
         });
         await schema.validate(data, {
           abortEarly: false,
         });
 
-        await signIn({
+        // recuperacao de senha
+        await api.post('/password/forgot', {
           email: data.email,
-          password: data.password,
         });
 
-        history.push('/dashboard');
+        addToast({
+          type: 'info',
+          title: 'Email de recuperação enviado',
+          description:
+            'Enviamos um email para confirmar a recuperação de senha, verifique a caixa de entrada do seu email',
+        });
       } catch (error) {
         if (error instanceof Yup.ValidationError) {
           const errors = getValidationErros(error);
@@ -52,12 +57,15 @@ const SignIn: React.FC = () => {
         }
         addToast({
           type: 'error',
-          title: 'Erro na autenticação',
-          description: 'Verifique seu email/senha',
+          title: 'Erro na recuperação de senha',
+          description:
+            'Ocorreu um erro ao tentar recuperar a senha, tente novamente',
         });
+      } finally {
+        setLoading(false);
       }
     },
-    [signIn, addToast, history],
+    [addToast],
   );
 
   return (
@@ -66,25 +74,20 @@ const SignIn: React.FC = () => {
         <AnimatedContainer>
           <img src={logoImg} alt="GoBarber Web" />
           <Form ref={formRef} onSubmit={handleFormSubmit}>
-            <h1>Faça seu logon</h1>
+            <h1>Recuperação de senha</h1>
             <Input
               name="email"
               icon={FiMail}
               placeholder="E-mail"
               autoComplete="disabled"
             />
-            <Input
-              name="password"
-              icon={FiLock}
-              type="password"
-              placeholder="Senha"
-            />
-            <Button type="submit">Entrar</Button>
-            <Link to="forgot-password">Esqueci minha senha</Link>
+            <Button type="submit" loading={loading}>
+              Recuperar
+            </Button>
           </Form>
-          <Link to="/signup">
+          <Link to="/">
             <FiLogIn size={20} />
-            Criar conta
+            Voltar ao login
           </Link>
         </AnimatedContainer>
       </Content>
@@ -93,4 +96,4 @@ const SignIn: React.FC = () => {
   );
 };
 
-export default SignIn;
+export default ForgotPassword;

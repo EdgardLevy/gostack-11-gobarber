@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { createContext, useContext, useCallback, useState } from 'react';
 
 import { uuid } from 'uuidv4';
 
