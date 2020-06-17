@@ -36,6 +36,7 @@ const Dashboard: React.FC = () => {
   const { signOut, user } = useAuth();
 
   const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
+    if (modifiers.disabled) return;
     if (modifiers.available) {
       setSelectedDate(day);
     }
