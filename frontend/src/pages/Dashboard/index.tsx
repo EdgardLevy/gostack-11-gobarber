@@ -21,9 +21,6 @@ import logoImg from '../../assets/logo.svg';
 import { useAuth } from '../../hooks/auth';
 import api from '../../services/api';
 
-const profileImg =
-  'https://avatars2.githubusercontent.com/u/48997332?s=460&u=9eba604e16824e19e38eda8f004a22ec3af7af07&v=4';
-
 interface MonthAvailabilityItem {
   day: number;
   available: boolean;
