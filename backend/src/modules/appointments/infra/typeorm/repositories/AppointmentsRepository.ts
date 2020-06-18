@@ -4,6 +4,7 @@ import IAppointmentsRespository from '@modules/appointments/repositories/IAppoin
 import ICreateAppointmentDTO from '@modules/appointments/dtos/ICreateAppointmentDTO';
 import IFindAllInMonthFromProviderDTO from '@modules/appointments/dtos/IFindAllInMonthFromProviderDTO';
 import IFindAllInDayFromProviderDTO from '@modules/appointments/dtos/IFindAllInDayFromProviderDTO';
+import { classToClass } from 'class-transformer';
 
 class AppointmentsRepository implements IAppointmentsRespository {
   private ormRepository: Repository<Appointment>;
@@ -34,9 +35,10 @@ class AppointmentsRepository implements IAppointmentsRespository {
   ): Promise<Appointment | undefined> {
     const findAppointment = await this.ormRepository.findOne({
       where: { date, provider_id },
+      relations: ['user'],
     });
 
-    return findAppointment;
+    return classToClass(findAppointment);
   }
 
   public async findAllInMonthFromProvider({
@@ -55,7 +57,7 @@ class AppointmentsRepository implements IAppointmentsRespository {
       },
       relations: ['user'],
     });
-    return appointments;
+    return classToClass(appointments);
   }
 
   public async findAllInDayFromProvider({
@@ -74,8 +76,9 @@ class AppointmentsRepository implements IAppointmentsRespository {
             `to_char(${dateFieldName},'DD-MM-YYYY') = '${parsedDay}-${parsedMonth}-${year}'`,
         ),
       },
+      relations: ['user'],
     });
-    return appointments;
+    return classToClass(appointments);
   }
 }
 
