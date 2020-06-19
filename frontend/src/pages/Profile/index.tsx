@@ -1,6 +1,6 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, FormEvent, ChangeEvent } from 'react';
 
-import { FiArrowLeft, FiMail, FiLock, FiUser } from 'react-icons/fi';
+import { FiArrowLeft, FiMail, FiLock, FiUser, FiCamera } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import { FormHandles } from '@unform/core';
@@ -66,15 +66,39 @@ const Profile: React.FC = () => {
     [addToast, history],
   );
 
+  const handleChangeAvatar = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {},
+    [],
+  );
+
   return (
     <Container>
-      <Content>
-        <Form ref={formRef} onSubmit={handleFormSubmit}>
-          <h1>Meu Perfil</h1>
+      <header>
+        <div>
+          <Link to="/dashboard">
+            <FiArrowLeft />
+          </Link>
+        </div>
+      </header>
 
+      <Content>
+        <Form
+          ref={formRef}
+          initialData={{
+            name: user.name,
+            email: user.email,
+          }}
+          onSubmit={handleFormSubmit}
+        >
           <AvatarInput>
             <img src={user.avatar_url} alt={user.name} />
+            <label htmlFor="avatar">
+              <FiCamera />
+              <input type="file" id="avatar" onChange={handleChangeAvatar} />
+            </label>
           </AvatarInput>
+
+          <h1>Meu Perfil</h1>
 
           <Input
             name="name"
@@ -109,10 +133,6 @@ const Profile: React.FC = () => {
           />
           <Button type="submit">Confirmar mudanças</Button>
         </Form>
-        <Link to="/">
-          <FiArrowLeft size={20} />
-          Voltar
-        </Link>
       </Content>
     </Container>
   );
