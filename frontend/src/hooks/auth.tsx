@@ -29,8 +29,8 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState>(() => {
-    const token = localStorage.getItem('@Gobarber:token');
-    const user = localStorage.getItem('@Gobarber:user');
+    const token = localStorage.getItem('@GoBarber:token');
+    const user = localStorage.getItem('@GoBarber:user');
     if (token && user) {
       api.defaults.headers.authorization = `Bearer ${token}`;
       return { token, user: JSON.parse(user) };
@@ -43,21 +43,21 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     const { token, user } = response.data;
 
-    localStorage.setItem('@Gobarber:token', token);
-    localStorage.setItem('@Gobarber:user', JSON.stringify(user));
+    localStorage.setItem('@GoBarber:token', token);
+    localStorage.setItem('@GoBarber:user', JSON.stringify(user));
     api.defaults.headers.authorization = `Bearer ${token}`;
     setData({ token, user });
   }, []);
 
   const signOut = useCallback(() => {
-    localStorage.removeItem('@Gobarber:token');
-    localStorage.removeItem('@Gobarber:user');
+    localStorage.removeItem('@GoBarber:token');
+    localStorage.removeItem('@GoBarber:user');
     setData({} as AuthState);
   }, []);
 
   const updateUser = useCallback(
     (user: User) => {
-      localStorage.setItem('@Gobarber:user', JSON.stringify(user));
+      localStorage.setItem('@GoBarber:user', JSON.stringify(user));
       setData({
         token: data.token,
         user,
@@ -82,8 +82,8 @@ export const AuthProvider: React.FC = ({ children }) => {
 
 export function useAuth(): AuthContextData {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be use within an AuthProvider');
-  }
+  // if (!context) {
+  //   throw new Error('useAuth must be use within an AuthProvider');
+  // }
   return context;
 }
