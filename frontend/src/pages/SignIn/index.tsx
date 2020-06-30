@@ -8,10 +8,10 @@ import { Link, useHistory } from 'react-router-dom';
 import logoImg from '../../assets/logo.svg';
 import { Container, Content, Background, AnimatedContainer } from './styles';
 import getValidationErros from '../../utils/getValidationErrors';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
 import { useAuth } from '../../hooks/auth';
 import { useToast } from '../../hooks/toast';
+import Input from '../../components/Input';
+import Button from '../../components/Button';
 
 interface SignInFormData {
   email: string;
