@@ -21,6 +21,9 @@ DerivedData
 *.ipa
 *.xcuserstate
 
+# testing
+/coverage
+
 # Android/IntelliJ
 #
 build/
